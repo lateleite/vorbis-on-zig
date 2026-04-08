@@ -1,0 +1,20 @@
+.{
+    .name = .vorbis,
+    .fingerprint = 0x808d28d27526d60e,
+    .version = "1.3.8-git", // use the latest unreleased commit for fixes
+    .minimum_zig_version = "0.15.2",
+    .dependencies = .{
+        .ogg = .{
+            .url = "git+https://github.com/lateleite/ogg-on-zig.git",
+            .hash = "ogg-1.3.6-rt5OMAkHAADD9W0wAUrgZW9eo2prpVd5EMs7ElLAbwrf",
+        },
+        .vorbis = .{
+            .url = "https://github.com/xiph/vorbis/archive/8de7001691d9177e30ff16a98b37b1e6fd15f7af.tar.gz",
+            .hash = "N-V-__8AAI92SABK_8gZ5Ouln3-leDAOHCmItKn95DpiD9FB",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+    },
+}
