@@ -16,9 +16,13 @@ pub fn build(b: *std.Build) void {
 
     //
     // upstream vorbis' builds 3 different libraries: vorbis, vorbisenc and vorbisfile.
-    // since we're doing a static library build, we can just join them into 1 for simplicity.
+    // we do the same here now.
     //
-    const lib = b.addLibrary(.{
+
+    //
+    // base vorbis
+    //
+    const lib_vorbis = b.addLibrary(.{
         .name = "vorbis",
         .linkage = .static,
         .root_module = b.createModule(.{
@@ -29,7 +33,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    lib.addCSourceFiles(.{
+    lib_vorbis.addCSourceFiles(.{
         .root = upstream.path("lib"),
         .files = &.{
             // VORBIS_SOURCES
@@ -59,11 +63,74 @@ pub fn build(b: *std.Build) void {
             "vorbisenc.c",
         },
     });
-    lib.linkLibrary(lib_ogg);
+    lib_vorbis.linkLibrary(lib_ogg);
 
-    lib.addIncludePath(upstream.path("include"));
-    lib.addIncludePath(upstream.path("lib"));
+    lib_vorbis.addIncludePath(upstream.path("include"));
+    lib_vorbis.addIncludePath(upstream.path("lib"));
 
-    lib.installHeadersDirectory(upstream.path("include/vorbis"), "vorbis", .{});
-    b.installArtifact(lib);
+    lib_vorbis.installHeader(upstream.path("include/vorbis/codec.h"), "vorbis/codec.h");
+
+    //
+    // vorbisenc
+    //
+    const lib_enc = b.addLibrary(.{
+        .name = "vorbisenc",
+        .linkage = .static,
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+            .pic = pic,
+        }),
+    });
+
+    lib_enc.addCSourceFiles(.{
+        .root = upstream.path("lib"),
+        .files = &.{
+            // VORBISENC_SOURCES
+            "vorbisenc.c",
+        },
+    });
+    lib_enc.linkLibrary(lib_ogg);
+    lib_enc.linkLibrary(lib_vorbis);
+
+    lib_enc.addIncludePath(upstream.path("include"));
+    lib_enc.addIncludePath(upstream.path("lib"));
+
+    lib_enc.installHeader(upstream.path("include/vorbis/codec.h"), "vorbis/codec.h");
+    lib_enc.installHeader(upstream.path("include/vorbis/vorbisenc.h"), "vorbis/vorbisenc.h");
+
+    //
+    // vorbisfile
+    //
+    const lib_file = b.addLibrary(.{
+        .name = "vorbisfile",
+        .linkage = .static,
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+            .pic = pic,
+        }),
+    });
+
+    lib_file.addCSourceFiles(.{
+        .root = upstream.path("lib"),
+        .files = &.{
+            // VORBISFILE_SOURCES
+            "vorbisfile.c",
+        },
+    });
+    lib_file.linkLibrary(lib_ogg);
+    lib_file.linkLibrary(lib_vorbis);
+
+    lib_file.addIncludePath(upstream.path("include"));
+    lib_file.addIncludePath(upstream.path("lib"));
+
+    lib_file.installHeader(upstream.path("include/vorbis/codec.h"), "vorbis/codec.h");
+    lib_file.installHeader(upstream.path("include/vorbis/vorbisfile.h"), "vorbis/vorbisfile.h");
+
+    b.installArtifact(lib_vorbis);
+    b.installArtifact(lib_enc);
+    b.installArtifact(lib_file);
 }
