@@ -20,6 +20,10 @@ pub fn build(b: *std.Build) !void {
     const dep_vorbis = b.dependency("vorbis", .{
         .target = target,
         .optimize = optimize,
+        // force linking mode (default is static)
+        // .@"link-mode" = .dynamic,
+        // force enable or disable Position Independent Code (PIC) 
+        // .pic = true,
     });
     const lib_vorbis = dep_vorbis.artifact("vorbis");
 

@@ -4,6 +4,8 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const link_mode = b.option(std.builtin.LinkMode, "link-mode", "Linking mode for the libraries") orelse
+        .static;
     const pic = b.option(bool, "pic", "Enable Position Independent Code option");
 
     const upstream = b.dependency("vorbis", .{});
@@ -24,7 +26,7 @@ pub fn build(b: *std.Build) void {
     //
     const lib_vorbis = b.addLibrary(.{
         .name = "vorbis",
-        .linkage = .static,
+        .linkage = link_mode,
         .root_module = b.createModule(.{
             .target = target,
             .optimize = optimize,
@@ -75,7 +77,7 @@ pub fn build(b: *std.Build) void {
     //
     const lib_enc = b.addLibrary(.{
         .name = "vorbisenc",
-        .linkage = .static,
+        .linkage = link_mode,
         .root_module = b.createModule(.{
             .target = target,
             .optimize = optimize,
@@ -105,7 +107,7 @@ pub fn build(b: *std.Build) void {
     //
     const lib_file = b.addLibrary(.{
         .name = "vorbisfile",
-        .linkage = .static,
+        .linkage = link_mode,
         .root_module = b.createModule(.{
             .target = target,
             .optimize = optimize,
