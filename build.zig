@@ -35,7 +35,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    lib_vorbis.addCSourceFiles(.{
+    lib_vorbis.root_module.addCSourceFiles(.{
         .root = upstream.path("lib"),
         .files = &.{
             // VORBIS_SOURCES
@@ -65,10 +65,10 @@ pub fn build(b: *std.Build) void {
             "vorbisenc.c",
         },
     });
-    lib_vorbis.linkLibrary(lib_ogg);
+    lib_vorbis.root_module.linkLibrary(lib_ogg);
 
-    lib_vorbis.addIncludePath(upstream.path("include"));
-    lib_vorbis.addIncludePath(upstream.path("lib"));
+    lib_vorbis.root_module.addIncludePath(upstream.path("include"));
+    lib_vorbis.root_module.addIncludePath(upstream.path("lib"));
 
     lib_vorbis.installHeader(upstream.path("include/vorbis/codec.h"), "vorbis/codec.h");
 
@@ -86,18 +86,18 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    lib_enc.addCSourceFiles(.{
+    lib_enc.root_module.addCSourceFiles(.{
         .root = upstream.path("lib"),
         .files = &.{
             // VORBISENC_SOURCES
             "vorbisenc.c",
         },
     });
-    lib_enc.linkLibrary(lib_ogg);
-    lib_enc.linkLibrary(lib_vorbis);
+    lib_enc.root_module.linkLibrary(lib_ogg);
+    lib_enc.root_module.linkLibrary(lib_vorbis);
 
-    lib_enc.addIncludePath(upstream.path("include"));
-    lib_enc.addIncludePath(upstream.path("lib"));
+    lib_enc.root_module.addIncludePath(upstream.path("include"));
+    lib_enc.root_module.addIncludePath(upstream.path("lib"));
 
     lib_enc.installHeader(upstream.path("include/vorbis/codec.h"), "vorbis/codec.h");
     lib_enc.installHeader(upstream.path("include/vorbis/vorbisenc.h"), "vorbis/vorbisenc.h");
@@ -116,18 +116,18 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    lib_file.addCSourceFiles(.{
+    lib_file.root_module.addCSourceFiles(.{
         .root = upstream.path("lib"),
         .files = &.{
             // VORBISFILE_SOURCES
             "vorbisfile.c",
         },
     });
-    lib_file.linkLibrary(lib_ogg);
-    lib_file.linkLibrary(lib_vorbis);
+    lib_file.root_module.linkLibrary(lib_ogg);
+    lib_file.root_module.linkLibrary(lib_vorbis);
 
-    lib_file.addIncludePath(upstream.path("include"));
-    lib_file.addIncludePath(upstream.path("lib"));
+    lib_file.root_module.addIncludePath(upstream.path("include"));
+    lib_file.root_module.addIncludePath(upstream.path("lib"));
 
     lib_file.installHeader(upstream.path("include/vorbis/codec.h"), "vorbis/codec.h");
     lib_file.installHeader(upstream.path("include/vorbis/vorbisfile.h"), "vorbis/vorbisfile.h");
